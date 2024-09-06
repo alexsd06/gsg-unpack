@@ -1,40 +1,44 @@
-using System;
-using System.Windows.Forms;
-using static System.Windows.Forms.DataFormats;
+using System.Reflection;
+using System.Diagnostics;
+using System.IO;
 
 namespace gsg_unpack
 {
     public partial class gsg_unpack : Form
     {
 
-        string game, game_path, usrdir_path, movie_path, res_path, file_type;
+        string? game, game_path, usrdir_path, movie_path, res_path, file_type;
 
         private void add_files_to_filebox()
         {
+            startButton.Enabled = false;
             fileListBox.Items.Clear();
             if (file_type == "MPK" && !string.IsNullOrEmpty(usrdir_path))
             {
+                startButton.Enabled = true;
                 var files = new DirectoryInfo(usrdir_path).GetFiles().Select(o => o.Name).ToArray();
                 fileListBox.Items.AddRange(files);
             }
             else if (file_type == "BK2" && !string.IsNullOrEmpty(res_path))
             {
+                startButton.Enabled = true;
                 var files = new DirectoryInfo(res_path).GetFiles().Select(o => o.Name).ToArray();
                 fileListBox.Items.AddRange(files);
             }
         }
 
-        private string GetListBoxSelectedValues()
+        private List<string?> getSelectedItems()
         {
+            List<string?> selected_items_str=new List<string?>();
             var selected_items = fileListBox.SelectedItems;
             for (int i=0; i<selected_items.Count; i++)
             {
                 var selected_item = selected_items[i];
-                string sel_item_str = fileListBox.GetItemText(selected_item);
-                MessageBox.Show(sel_item_str);
+                string? sel_item_str = fileListBox.GetItemText(selected_item);
+                selected_items_str.Add(sel_item_str);
             }
-            
-            return "";
+
+            return selected_items_str;
         }
 
         Dictionary<string, string> gamePath;
@@ -47,10 +51,9 @@ namespace gsg_unpack
             gamePath.Add("STEINS;GATE 0", root_path + "STEINS;GATE 0");
             gamePath.Add("STEINS;GATE: Linear Bounded Phenogram", root_path + "SG_Phenogram");
             gamePath.Add("STEINS;GATE: My Darling's Embrace", root_path + "SG_My Darling's Embrace");
-            //resLabel = this.Controls.Find("resLabel", true).FirstOrDefault() as Label;
-            //resChooser = this.Controls.Find("resChooser", true).FirstOrDefault() as ComboBox;
             resLabel.Hide();
             resChooser.Hide();
+            startButton.Enabled = false;
         }
 
         private void gsg_unpack_Load(object sender, EventArgs e)
@@ -90,8 +93,62 @@ namespace gsg_unpack
 
         private void startButton_Click(object sender, EventArgs e)
         {
-            GetListBoxSelectedValues();
-            //MessageBox.Show(game_path + '\n' + usrdir_path + '\n' + movie_path + '\n' + file_type + '\n' + res_path);
+            string? exe_root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string? output_dir = exe_root + "\\output\\"+game;
+            Directory.CreateDirectory(output_dir);
+            List<string?> selected_items = getSelectedItems();
+            if (file_type == "MPK")
+            {
+                string sg_unpack = exe_root + "\\sg-unpack\\sg-unpack.exe";
+                for (int i = 0; i < selected_items.Count; i++)
+                {
+                    string? item = selected_items[i]; 
+                    string path = usrdir_path + '\\' + item;
+                    Process p = new Process();
+                    p.StartInfo.FileName = sg_unpack;
+                    p.StartInfo.Arguments = String.Format("-i \"{0}\" -o \"{1}\"", path, output_dir);
+                    p.StartInfo.UseShellExecute = false;
+                    p.StartInfo.RedirectStandardOutput = true;
+
+                    p.StartInfo.CreateNoWindow = true;
+                    p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
+                    p.Start();
+                    string output = p.StandardOutput.ReadToEnd();
+                    p.WaitForExit(); // This waits until the program called is closed
+
+                    logTextBox.Text = output;
+                }
+            }
+            else if (file_type == "BK2")
+            {
+                // https://forums.nexusmods.com/topic/11403533-rad-bink-downsizing-the-resolution-of-a-video/
+                // https://www.radgametools.com/binkfaq.htm (Search for "switches" in the page)
+
+                string radvideo = exe_root + "\\RADVideo\\radvideo64.exe";
+                string bk2_output_dir = output_dir + "\\BK2";
+                Directory.CreateDirectory(bk2_output_dir);
+                for (int i = 0; i < selected_items.Count; i++)
+                {
+                    string? item = selected_items[i];
+                    string path = res_path + '\\' + item;
+                    string? output_filename = item?.Replace(".bk2", ".mp4");
+                    Process p = new Process();
+                    p.StartInfo.FileName = radvideo;
+                    p.StartInfo.Arguments = String.Format("binkconv \"{0}\" \"{1}\\{2}\"", path, bk2_output_dir, output_filename);
+                    p.StartInfo.UseShellExecute = false;
+                    p.StartInfo.RedirectStandardOutput = true;
+
+                    // p.StartInfo.CreateNoWindow = true;
+                    // p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
+                    p.Start();
+                    string output = p.StandardOutput.ReadToEnd();
+                    p.WaitForExit(); // This waits until the program called is closed
+
+                    logTextBox.Text = output;
+                }
+            }
         }
 
         private void resChooser_SelectedIndexChanged(object sender, EventArgs e)

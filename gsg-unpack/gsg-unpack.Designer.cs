@@ -39,6 +39,7 @@
             startButton = new Button();
             fileListLabel = new Label();
             fileListBox = new ListBox();
+            logTextBox = new TextBox();
             ((System.ComponentModel.ISupportInitialize)sgIcon).BeginInit();
             SuspendLayout();
             // 
@@ -114,19 +115,19 @@
             // sgIcon
             // 
             sgIcon.Image = Properties.Resources.SGIcon;
-            sgIcon.Location = new Point(638, 12);
+            sgIcon.Location = new Point(638, 10);
             sgIcon.Name = "sgIcon";
-            sgIcon.Size = new Size(135, 138);
+            sgIcon.Size = new Size(135, 113);
             sgIcon.SizeMode = PictureBoxSizeMode.Zoom;
             sgIcon.TabIndex = 6;
             sgIcon.TabStop = false;
             // 
             // startButton
             // 
-            startButton.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            startButton.Location = new Point(638, 244);
+            startButton.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            startButton.Location = new Point(638, 159);
             startButton.Name = "startButton";
-            startButton.Size = new Size(135, 83);
+            startButton.Size = new Size(135, 38);
             startButton.TabIndex = 7;
             startButton.Text = "Start";
             startButton.UseVisualStyleBackColor = true;
@@ -151,8 +152,21 @@
             fileListBox.Location = new Point(124, 244);
             fileListBox.Name = "fileListBox";
             fileListBox.SelectionMode = SelectionMode.MultiSimple;
-            fileListBox.Size = new Size(445, 184);
+            fileListBox.Size = new Size(192, 184);
             fileListBox.TabIndex = 9;
+            // 
+            // logTextBox
+            // 
+            logTextBox.BackColor = SystemColors.ActiveCaptionText;
+            logTextBox.Font = new Font("Segoe UI", 10F);
+            logTextBox.ForeColor = SystemColors.ControlLightLight;
+            logTextBox.Location = new Point(351, 244);
+            logTextBox.Multiline = true;
+            logTextBox.Name = "logTextBox";
+            logTextBox.ReadOnly = true;
+            logTextBox.ScrollBars = ScrollBars.Vertical;
+            logTextBox.Size = new Size(422, 184);
+            logTextBox.TabIndex = 10;
             // 
             // gsg_unpack
             // 
@@ -160,6 +174,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ActiveCaptionText;
             ClientSize = new Size(800, 450);
+            Controls.Add(logTextBox);
             Controls.Add(fileListBox);
             Controls.Add(fileListLabel);
             Controls.Add(startButton);
@@ -193,5 +208,6 @@
         private Button startButton;
         private Label fileListLabel;
         private ListBox fileListBox;
+        private TextBox logTextBox;
     }
 }
