@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("gsg-unpack")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d6e60c462b2cd668d3265f1e4c078da174376d01")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4cdccc363fd7aa7fd28aaf631f5c18721993e648")]
 [assembly: System.Reflection.AssemblyProductAttribute("gsg-unpack")]
 [assembly: System.Reflection.AssemblyTitleAttribute("gsg-unpack")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

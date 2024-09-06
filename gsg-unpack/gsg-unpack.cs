@@ -94,7 +94,7 @@ namespace gsg_unpack
         private void startButton_Click(object sender, EventArgs e)
         {
             string? exe_root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string? output_dir = exe_root + "\\output\\"+game;
+            string? output_dir = exe_root + "\\output\\"+game?.Replace(":", "");
             Directory.CreateDirectory(output_dir);
             List<string?> selected_items = getSelectedItems();
             if (file_type == "MPK")

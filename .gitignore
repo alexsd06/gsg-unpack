@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+gsg-unpack/bin/Debug/net8.0-windows/output
+gsg-unpack/bin/Release/net8.0-windows/output
+
 # User-specific files
 *.rsuser
 *.suo
